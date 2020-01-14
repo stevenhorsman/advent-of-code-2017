@@ -2,6 +2,8 @@ import sys
 
 input_file = 'day-05/input.txt'
 
+#TODO - consider pypy intepreter?
+
 def get_steps(input, part2 = False):
   instructions = [int(line) for line in input.splitlines()]
   ip = steps = 0
