@@ -24,6 +24,12 @@ def test_part1():
   expected = "fbgguv"
   assert recursive_circus.part1(data) == expected
 
+def test_part1_nx():
+  with open(recursive_circus.input_file) as f:
+    data = f.read()
+  expected = "fbgguv"
+  assert recursive_circus.part1_nx(data) == expected
+
 def test_part2_example_1():
   data = """
 pbga (66)

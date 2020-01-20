@@ -1,5 +1,6 @@
 from re import match
 from collections import Counter
+import networkx as nx
 
 input_file = 'day-07/input.txt'
 
@@ -22,12 +23,9 @@ def part1(input):
   return get_root(tree)
 
 def get_sub_tree_weight(sub_weights, programs_tree, program_weights, node):
-  if node in programs_tree.keys():
-    sub_weights[node] = [(child, get_sub_tree_weight(sub_weights, programs_tree, program_weights, child)) for child in programs_tree[node]]
-    return program_weights[node] + sum(weight for label, weight in sub_weights[node])
-  else:
-    return program_weights[node]
-
+  sub_weights[node] = [(child, get_sub_tree_weight(sub_weights, programs_tree, program_weights, child)) for child in programs_tree[node]]
+  return program_weights[node] + sum(weight for label, weight in sub_weights[node])
+  
 def get_unbalanced(sub_weights, node):
   counter = Counter(weight for (child, weight) in sub_weights[node]).most_common()
   if len(counter) == 1:
@@ -49,6 +47,24 @@ def part2(input):
     start, weight_diff = get_unbalanced(sub_weights, start)
 
   return weights[start] + weight_diff
+
+# From https://www.reddit.com/r/adventofcode/comments/7i44pg/2017_day_7_solutions/dqw0f0c/
+def create_graph(input):
+  graph = nx.DiGraph()
+  for line in input.splitlines():
+    m = match("^(\w+) \((\d+)\)(?: -> )?(.*)$", line)
+    program = m.group(1)
+    graph.add_node(program, weight=int(m.group(2)))
+    for child in m.group(3).split(", "):
+      graph.add_edge(program, child)
+  return graph
+
+def part1_nx(input):
+  graph = create_graph(input)
+
+  # Topological sort to find the root of the tree
+  ordered = list(nx.topological_sort(graph))
+  return ordered[0]
 
 if __name__ == "__main__":
   with open(input_file) as f:
