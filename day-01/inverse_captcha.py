@@ -11,7 +11,7 @@ def sum_matches_with_zip(input, lookahead):
   return sum(int(a) for a, b in zip(input, input[lookahead:] + input[:lookahead]) if a == b)
 
 def part1(input):
- return sum_matches(input, 1)
+  return sum_matches(input, 1)
 
 def part2(input):
   half_length = len(input) // 2
