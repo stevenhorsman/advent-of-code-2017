@@ -31,5 +31,5 @@ def test_part2_example_1():
 def test_part2():
   with open(digital_plumber.input_file) as f:
     data = f.read()
-  expected = 1278
+  expected = 204
   assert digital_plumber.part2(data) == expected
