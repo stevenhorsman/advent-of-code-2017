@@ -1,14 +1,32 @@
 from operator import xor
 from functools import reduce
+from collections import Counter
+import networkx as nx
 
-input_file = 'day-10/input.txt'
+input_file = 'day-14/input.txt'
 
-# Tidy up from https://www.reddit.com/r/adventofcode/comments/7irzg5/2017_day_10_solutions/dr109d3/
-def part1(input, list_size = 256):
-  input = [int(x.strip()) for x in input.split(",")]
-  knot_list, _, _ = one_round(input, knot_list=list(range(0,list_size)))
-  return knot_list[0] * knot_list[1]
+def create_grid(input):
+  grid = set()
+  for i in range(128):
+    row_bin = '{:0128b}'.format(int(knot_hash(input + '-' + str(i)), 16))
+    for j in range(len(row_bin)):
+      if row_bin[j] == '1':
+        grid.add((j,i))
+  return grid
 
+def part1(input):
+  return len(create_grid(input))
+
+def part2(input):
+  grid = create_grid(input)
+  graph = nx.generators.grid_2d_graph(128, 128)
+  for x in range(128):
+    for y in range(128):
+      if (x,y) not in grid:
+        graph.remove_node((x,y))
+  return nx.number_connected_components(graph)
+
+# TODO - refactor to run from day10
 def one_round(input, curr_pos = 0, skip_size = 0, knot_list = list(range(0,256))):
   list_size = len(knot_list)
   for length in input:
@@ -17,15 +35,6 @@ def one_round(input, curr_pos = 0, skip_size = 0, knot_list = list(range(0,256))
     replace_vals = reversed([knot_list[i] for i in to_reverse_indices])
     for i, v in zip(to_reverse_indices, replace_vals):
       knot_list[i] = v
-    # Alternative:
-    # to_reverse = []
-    # for x in range(length):
-    #   n = (curr_pos + x) % list_size
-    #   to_reverse.append(knot_list[n])
-    # to_reverse.reverse()
-    # for x in range(length):
-    #   n = (curr_pos + x) % list_size
-    #   knot_list[n] = to_reverse[x]
     curr_pos = (curr_pos + length + skip_size) % list_size
     skip_size += 1
   return (knot_list, curr_pos, skip_size)
@@ -46,9 +55,6 @@ def knot_hash(input):
     dense_hash.append(format(reduce(xor, subslice), '02x'))
 
   return ''.join(dense_hash)
-
-def part2(input):
-  return knot_hash(input)
 
 if __name__ == "__main__":
   with open(input_file) as f:
