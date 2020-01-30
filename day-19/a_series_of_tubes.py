@@ -9,7 +9,9 @@ def get_direction(curr, rotation):
 
 deltas = dict(zip('><^v', [(1, 0), (-1, 0), (0, -1), (0, 1)]))
 
-def find_path(pipes):
+def find_path(input):
+  lines = [list(line) for line in input.splitlines()]
+  pipes = {(x,y): lines[y][x] for y in range(0,len(lines)) for x in range(0,len(lines[y])) if lines[y][x] != ' '}
   x,y = [key[0] for key in pipes if key[1] == 0][0], 0
   path = []
   curr_dir = 'v'
@@ -34,14 +36,10 @@ def find_path(pipes):
     
 
 def part1(input):
-  lines = [list(line) for line in input.splitlines()]
-  pipes = {(x,y): lines[y][x] for y in range(0,len(lines)) for x in range(0,len(lines[y])) if lines[y][x] != ' '}
-  return ''.join(c for c in find_path(pipes) if c.isalpha())
+  return ''.join(c for c in find_path(input) if c.isalpha())
 
 def part2(input):
-  lines = [list(line) for line in input.splitlines()]
-  pipes = {(x,y): lines[y][x] for y in range(0,len(lines)) for x in range(0,len(lines[y])) if lines[y][x] != ' '}
-  return len(find_path(pipes))
+  return len(find_path(input))
 
 if __name__ == "__main__":
   with open(input_file) as f:
