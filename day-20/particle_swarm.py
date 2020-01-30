@@ -23,7 +23,7 @@ class Particle:
 
 def part1(input):
   particles = [Particle(line) for line in input.splitlines()]
-  for _ in range(200):
+  for _ in range(400):
     for particle in particles:
       particle.update()
 
