@@ -25,7 +25,7 @@ In state B:
     - Write the value 1.
     - Move one slot to the right.
     - Continue with state A."""[1:]
-  assert halting_problem.example(data) == 3
+  assert halting_problem.part1(data) == 3
 
 def test_part1():
   with open(halting_problem.input_file) as f:

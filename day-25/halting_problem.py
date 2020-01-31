@@ -1,4 +1,5 @@
 from collections import defaultdict
+import yaml, re
 
 input_file = 'day-25/input.txt'
 
@@ -9,32 +10,33 @@ def run(steps, state, states):
     val = tape[cursor]
     action = states[state][val]
     tape[cursor] = action[0]
-    if action[1] == 'R':
+    if action[1] == 'right':
       cursor +=1
     else:
       cursor -= 1
     state = action[2]
   return tape
 
-def example(input):
-  state = 'A'
-  steps = 6
-  states = {'A': ((1,'R','B'), (0,'L','B')),
-    'B': ((1,'L','A'), (1,'R','A'))}
-  tape = run(steps, state, states)
+def process_line(line):
+  m = re.search(r"\w", line)
+  alpha_start = m.start()
+  last_space = line.rfind(' ')
+  return line[:alpha_start] + line[last_space:].replace('.','')
 
-  return sum(tape.values())
+def parse_input(input):
+  lines = input.splitlines()
+
+  state = lines[0].split()[-1][0]
+  steps = int(lines[1].split()[-2])
+
+  lines = [process_line(line) for line in lines[3:] if len(line) > 0]
+  states = yaml.load('\n'.join(lines))
+  return state, steps, states
 
 def part1(input):
-  states = {'A': ((1,'R','B'), (1,'L','E')),
-    'B': ((1,'R','C'), (1,'R','F')),
-    'C': ((1,'L','D'), (0,'R','B')),
-    'D': ((1,'R','E'), (0,'L','C')),
-    'E': ((1,'L','A'), (0,'R','D')),
-    'F': ((1,'R','A'), (1,'R','C'))}
-
-  steps = 12523873
-  state = 'A'
+  state, steps, states = parse_input(input)
+  # states = {'A': ((1,'R','B'), (0,'L','B')),
+  #   'B': ((1,'L','A'), (1,'R','A'))}
   tape = run(steps, state, states)
   return sum(tape.values())
 
