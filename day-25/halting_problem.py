@@ -8,13 +8,8 @@ def run(steps, state, states):
   cursor = 0
   for _ in range(steps):
     val = tape[cursor]
-    action = states[state][val]
-    tape[cursor] = action[0]
-    if action[1] == 'right':
-      cursor +=1
-    else:
-      cursor -= 1
-    state = action[2]
+    tape[cursor], dir, state = states[state][val]
+    cursor += {"right": 1, "left": -1}[dir]
   return tape
 
 def process_line(line):
